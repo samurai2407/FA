@@ -1,31 +1,41 @@
-import { useState } from 'react';
-import BudgetSummary from './components/BudgetSummary';
-import CategorySpending from './components/CategorySpending';
-import RecentTransactions from './components/RecentTransactions';
-import AIChatButton from './components/AIChatButton'; // Import the button
+// src/App.jsx
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import AddExpense from './pages/AddExpense';
 
 export default function App() {
-  const [userName, setUserName] = useState("Alex");
-
   return (
-    <div className="p-4 font-sans bg-gray-50 min-h-screen relative">
-      
-      <div className="mb-6">
-        <p className="text-gray-500 text-sm">Welcome back</p>
-        <h2 className="text-xl font-bold">Good morning, {userName}</h2>
+    <BrowserRouter>
+      {/* padding-bottom prevents the content from hiding behind the navbar */}
+      <div className="pb-20"> 
+        
+        {/* The Routes determine which page component to show */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/add-expense" element={<AddExpense />} />
+        </Routes>
+
+        {/* Fixed Bottom Navigation */}
+        <div className="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around py-4 text-xs font-medium text-gray-400 z-50">
+          <Link to="/" className="flex flex-col items-center text-[#00d09c]">
+            <span>🏠</span>
+            <span className="mt-1">Home</span>
+          </Link>
+          <Link to="/analytics" className="flex flex-col items-center hover:text-[#00d09c]">
+            <span>📊</span>
+            <span className="mt-1">Analytics</span>
+          </Link>
+          <Link to="/add-expense" className="flex flex-col items-center hover:text-[#00d09c]">
+            <span>➕</span>
+            <span className="mt-1">Add</span>
+          </Link>
+          <Link to="/profile" className="flex flex-col items-center hover:text-[#00d09c]">
+            <span>👤</span>
+            <span className="mt-1">Profile</span>
+          </Link>
+        </div>
+
       </div>
-
-      <BudgetSummary totalSpent={2847.50} monthlyBudget={4000} />
-      
-      <div className="mt-8">
-        <CategorySpending />
-      </div>
-
-      <RecentTransactions />
-
-      {/* Place the button here so it floats over everything */}
-      <AIChatButton />
-
-    </div>
+    </BrowserRouter>
   );
 }
