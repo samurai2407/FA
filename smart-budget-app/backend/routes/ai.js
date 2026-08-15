@@ -70,11 +70,11 @@ Guidelines:
       parts: [{ text: msg.text }],
     }));
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const chat  = model.startChat({
-      history: geminiHistory,
-      systemInstruction: systemPrompt,
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-flash-latest',
+      systemInstruction: { parts: [{ text: systemPrompt }] },
     });
+    const chat = model.startChat({ history: geminiHistory });
 
     const result = await chat.sendMessage(message);
     const reply  = result.response.text();
