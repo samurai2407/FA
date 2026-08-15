@@ -1,49 +1,37 @@
+// src/pages/Home.jsx
 import { useState } from 'react';
-import BudgetSummary from '../components/BudgetSummary';
-import CategorySpending from '../components/CategorySpending';
+import BudgetSummary      from '../components/BudgetSummary';
+import CategorySpending   from '../components/CategorySpending';
 import RecentTransactions from '../components/RecentTransactions';
-import AIChatButton from '../components/AIChatButton';
+import AIChatButton       from '../components/AIChatButton';
+import AIChat             from '../components/AIChat';
 
-export default function App() {
-  const [userName, setUserName] = useState("Alex");
-  
-  // 1. Added the state for our chat window (starts closed)
+export default function Home({ user, totalSpent, categories, transactions, deleteTransaction }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
-    <div className="p-4 font-sans bg-gray-50 min-h-screen relative">
-      
-      <div className="mb-6">
-        <p className="text-gray-500 text-sm">Welcome back</p>
-        <h2 className="text-xl font-bold">Good morning, {userName}</h2>
+    <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
+
+      {/* Header */}
+      <div className="mb-6 md:mb-8 mt-4 md:mt-0">
+        <p className="text-gray-500 dark:text-gray-400 text-sm">Welcome back</p>
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+          Good morning, {user?.name?.split(' ')[0]} 👋
+        </h2>
       </div>
 
-      <BudgetSummary totalSpent={2847.50} monthlyBudget={4000} />
-      
-      <div className="mt-8">
-        <CategorySpending />
-      </div>
-
-      <RecentTransactions />
-
-      {/* 2. We pass a function to the button so it can change the state to true */}
-      <div onClick={() => setIsChatOpen(true)}>
-        <AIChatButton />
-      </div>
-
-      {/* 3. The && trick! This box ONLY appears if isChatOpen is true */}
-      {isChatOpen && (
-        <div className="fixed bottom-24 right-6 w-80 h-96 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 p-4">
-          <p>Chat window goes here!</p>
-          <button 
-            onClick={() => setIsChatOpen(false)}
-            className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-          >
-            Close
-          </button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 flex flex-col gap-6">
+          <BudgetSummary totalSpent={totalSpent} monthlyBudget={user?.monthlyBudget} />
+          <CategorySpending categories={categories} />
         </div>
-      )}
+        <div className="lg:col-span-1">
+          <RecentTransactions transactions={transactions} onDelete={deleteTransaction} />
+        </div>
+      </div>
 
+      <AIChatButton onClick={() => setIsChatOpen(true)} />
+      {isChatOpen && <AIChat onClose={() => setIsChatOpen(false)} />}
     </div>
   );
 }
