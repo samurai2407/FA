@@ -8,6 +8,7 @@ import AIChat             from '../components/AIChat';
 
 export default function Home({ user, totalSpent, categories, transactions, deleteTransaction }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const currency = user?.currency || 'USD';
 
   return (
     <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
@@ -22,11 +23,11 @@ export default function Home({ user, totalSpent, categories, transactions, delet
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 flex flex-col gap-6">
-          <BudgetSummary totalSpent={totalSpent} monthlyBudget={user?.monthlyBudget} />
-          <CategorySpending categories={categories} />
+          <BudgetSummary totalSpent={totalSpent} monthlyBudget={user?.monthlyBudget} currency={currency} />
+          <CategorySpending categories={categories} currency={currency} />
         </div>
         <div className="lg:col-span-1">
-          <RecentTransactions transactions={transactions} onDelete={deleteTransaction} />
+          <RecentTransactions transactions={transactions} onDelete={deleteTransaction} currency={currency} />
         </div>
       </div>
 

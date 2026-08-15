@@ -1,6 +1,7 @@
 // src/pages/AddExpense.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { currencySymbol } from '../utils/currency';
 
 const CATEGORIES = [
   { label: 'Food & Dining',    icon: '🍽️' },
@@ -17,8 +18,9 @@ const CATEGORIES = [
 const today = new Date().toISOString().split('T')[0];
 const EMPTY_FORM = { amount: '', category: '', title: '', date: today, note: '' };
 
-export default function AddExpense({ addTransaction }) {
+export default function AddExpense({ addTransaction, user }) {
   const navigate = useNavigate();
+  const sym = currencySymbol(user?.currency);
   const [form, setForm]       = useState(EMPTY_FORM);
   const [errors, setErrors]   = useState({});
   const [success, setSuccess] = useState(false);
@@ -38,18 +40,22 @@ export default function AddExpense({ addTransaction }) {
     return e;
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
     const meta = CATEGORIES.find((c) => c.label === form.category);
-    addTransaction({
-      title: form.title.trim(), category: form.category,
-      date: form.date, amount: parseFloat(form.amount),
-      note: form.note.trim(), icon: meta?.icon || '📋',
-    });
-    setSuccess(true);
-    setTimeout(() => navigate('/'), 1000);
+    try {
+      await addTransaction({
+        title: form.title.trim(), category: form.category,
+        date: form.date, amount: parseFloat(form.amount),
+        note: form.note.trim(), icon: meta?.icon || '📋',
+      });
+      setSuccess(true);
+      setTimeout(() => navigate('/'), 1000);
+    } catch (err) {
+      setErrors({ submit: err.message || 'Failed to save expense' });
+    }
   }
 
   const inputBase = 'w-full p-4 rounded-xl outline-none transition-colors bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500';
@@ -74,6 +80,11 @@ export default function AddExpense({ addTransaction }) {
             ✅ Expense saved! Redirecting…
           </div>
         )}
+        {errors.submit && (
+          <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl px-4 py-3 text-sm">
+            {errors.submit}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8 space-y-6">
@@ -85,7 +96,7 @@ export default function AddExpense({ addTransaction }) {
               </label>
               <div className={`flex justify-center items-center text-6xl font-bold text-gray-900 dark:text-white border-b-2 pb-1 transition-colors
                 ${errors.amount ? 'border-red-400' : 'border-gray-200 dark:border-gray-700 focus-within:border-[#00d09c]'}`}>
-                <span>$</span>
+                <span>{sym}</span>
                 <input type="number" name="amount" value={form.amount} onChange={handleChange}
                   placeholder="0.00" min="0" step="0.01"
                   className="w-44 bg-transparent border-none outline-none text-center p-0 text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-600" />

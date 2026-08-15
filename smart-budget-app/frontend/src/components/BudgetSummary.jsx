@@ -1,5 +1,7 @@
 // src/components/BudgetSummary.jsx
-export default function BudgetSummary({ totalSpent, monthlyBudget }) {
+import { formatAmount } from '../utils/currency';
+
+export default function BudgetSummary({ totalSpent, monthlyBudget, currency }) {
   const remaining       = monthlyBudget - totalSpent;
   const percentageSpent = Math.round((totalSpent / monthlyBudget) * 100);
   const barWidth        = Math.min(percentageSpent, 100);
@@ -11,13 +13,15 @@ export default function BudgetSummary({ totalSpent, monthlyBudget }) {
       <div className="flex justify-between items-start">
         <div>
           <p className="text-gray-400 text-sm mb-1">Total Spent This Month</p>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">${totalSpent.toFixed(2)}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{formatAmount(totalSpent, currency)}</h1>
           <div className="flex flex-wrap gap-4 text-sm">
             <p className="text-gray-400">
-              Budget: <span className="text-white font-medium">${monthlyBudget.toFixed(0)}</span>
+              Budget: <span className="text-white font-medium">{formatAmount(monthlyBudget, currency, 0)}</span>
             </p>
             <p className={`font-medium ${overBudget ? 'text-red-400' : 'text-[#00d09c]'}`}>
-              {overBudget ? `Over by $${Math.abs(remaining).toFixed(2)}` : `Remaining: $${remaining.toFixed(2)}`}
+              {overBudget
+                ? `Over by ${formatAmount(Math.abs(remaining), currency)}`
+                : `Remaining: ${formatAmount(remaining, currency)}`}
             </p>
           </div>
         </div>

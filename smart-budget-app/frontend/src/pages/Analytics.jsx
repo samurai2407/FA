@@ -1,5 +1,6 @@
 // src/pages/Analytics.jsx
 import { useTheme } from '../context/ThemeContext';
+import { formatAmount, currencySymbol } from '../utils/currency';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
@@ -31,6 +32,8 @@ function StatCard({ label, value, sub, accent }) {
 
 export default function Analytics({ totalSpent, categories, monthlyTrend, user }) {
   const { dark } = useTheme();
+  const currency    = user?.currency || 'USD';
+  const sym         = currencySymbol(currency);
   const budget      = user?.monthlyBudget || 4000;
   const remaining   = budget - totalSpent;
   const savingsRate = Math.max(0, Math.round((remaining / budget) * 100));
@@ -56,10 +59,10 @@ export default function Analytics({ totalSpent, categories, monthlyTrend, user }
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Total Spent"  value={`$${totalSpent?.toFixed(2)}`} sub="This month" />
-        <StatCard label="Remaining"    value={`$${remaining?.toFixed(2)}`}  sub={`of $${budget}`} accent="text-[#00d09c]" />
-        <StatCard label="Savings Rate" value={`${savingsRate}%`}            sub="This month" />
-        <StatCard label="Avg / Month"  value={`$${avgMonthly}`}             sub="Last 6 months" />
+        <StatCard label="Total Spent"  value={formatAmount(totalSpent, currency)}   sub="This month" />
+        <StatCard label="Remaining"    value={formatAmount(remaining, currency)}     sub={`of ${formatAmount(budget, currency, 0)}`} accent="text-[#00d09c]" />
+        <StatCard label="Savings Rate" value={`${savingsRate}%`}                    sub="This month" />
+        <StatCard label="Avg / Month"  value={formatAmount(avgMonthly, currency, 0)} sub="Last 6 months" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -73,9 +76,9 @@ export default function Analytics({ totalSpent, categories, monthlyTrend, user }
               <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 12, fill: tickColor }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 12, fill: tickColor }} axisLine={false} tickLine={false}
-                tickFormatter={(v) => `$${(v / 1000).toFixed(1)}k`} />
+                tickFormatter={(v) => `${sym}${(v / 1000).toFixed(1)}k`} />
               <Tooltip
-                formatter={(v) => [`$${v.toLocaleString()}`, 'Spent']}
+                formatter={(v) => [`${sym}${v.toLocaleString()}`, 'Spent']}
                 contentStyle={{ borderRadius: '12px', border: `1px solid ${tooltipBorder}`, fontSize: 13, background: tooltipBg, color: dark ? '#fff' : '#111' }}
                 cursor={{ fill: cursorFill }}
               />
@@ -95,7 +98,7 @@ export default function Analytics({ totalSpent, categories, monthlyTrend, user }
                 {categories?.map((cat) => <Cell key={cat.name} fill={cat.color} />)}
               </Pie>
               <Tooltip
-                formatter={(v, name) => [`$${v.toLocaleString()}`, name]}
+                formatter={(v, name) => [`${sym}${v.toLocaleString()}`, name]}
                 contentStyle={{ borderRadius: '12px', border: `1px solid ${tooltipBorder}`, fontSize: 13, background: tooltipBg, color: dark ? '#fff' : '#111' }}
               />
               <Legend iconType="circle" iconSize={8}
@@ -128,9 +131,9 @@ export default function Analytics({ totalSpent, categories, monthlyTrend, user }
                     </div>
                     <div className="text-right">
                       <span className={`text-sm font-bold ${over ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>
-                        ${cat.spent.toLocaleString()}
+                        {sym}{cat.spent.toLocaleString()}
                       </span>
-                      {cat.limit && <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">/ ${cat.limit.toLocaleString()}</span>}
+                      {cat.limit && <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">/ {sym}{cat.limit.toLocaleString()}</span>}
                     </div>
                   </div>
                   {cat.limit && (
@@ -139,7 +142,7 @@ export default function Analytics({ totalSpent, categories, monthlyTrend, user }
                         style={{ width: `${pct}%`, background: over ? '#ef4444' : cat.color }} />
                     </div>
                   )}
-                  {over && <p className="text-red-400 text-xs mt-1">Over by ${(cat.spent - cat.limit).toLocaleString()}</p>}
+                  {over && <p className="text-red-400 text-xs mt-1">Over by {sym}{(cat.spent - cat.limit).toLocaleString()}</p>}
                 </div>
               );
             })}

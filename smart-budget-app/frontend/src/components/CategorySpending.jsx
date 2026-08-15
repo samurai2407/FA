@@ -1,7 +1,9 @@
 // src/components/CategorySpending.jsx
 import { useState } from 'react';
+import { currencySymbol } from '../utils/currency';
 
-export default function CategorySpending({ categories = [] }) {
+export default function CategorySpending({ categories = [], currency }) {
+  const sym = currencySymbol(currency);
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -26,8 +28,8 @@ export default function CategorySpending({ categories = [] }) {
                   <span className="font-medium text-gray-700 dark:text-gray-300">{cat.name}</span>
                 </div>
                 <span>
-                  <strong className={overBudget ? 'text-red-500' : 'text-gray-900 dark:text-white'}>${cat.spent}</strong>
-                  {cat.limit && <span className="text-gray-400 dark:text-gray-500"> / ${cat.limit}</span>}
+                  <strong className={overBudget ? 'text-red-500' : 'text-gray-900 dark:text-white'}>{sym}{cat.spent.toFixed(2)}</strong>
+                  {cat.limit && <span className="text-gray-400 dark:text-gray-500"> / {sym}{cat.limit.toFixed(2)}</span>}
                 </span>
               </div>
               {pct !== null && (
@@ -65,9 +67,9 @@ export default function CategorySpending({ categories = [] }) {
                       </div>
                       <div className="text-right">
                         <span className={`font-bold text-sm ${overBudget ? 'text-red-500' : 'text-gray-900 dark:text-white'}`}>
-                          ${cat.spent.toLocaleString()}
+                          {sym}{cat.spent.toFixed(2)}
                         </span>
-                        {cat.limit && <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">/ ${cat.limit.toLocaleString()}</span>}
+                        {cat.limit && <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">/ {sym}{cat.limit.toFixed(2)}</span>}
                       </div>
                     </div>
                     {cat.limit && (
@@ -79,8 +81,8 @@ export default function CategorySpending({ categories = [] }) {
                         <div className="flex justify-between mt-1">
                           <span className="text-xs text-gray-400 dark:text-gray-500">{pct}% used</span>
                           {overBudget
-                            ? <span className="text-xs text-red-400 font-medium">Over by ${(cat.spent - cat.limit).toLocaleString()}</span>
-                            : <span className="text-xs text-gray-400 dark:text-gray-500">${(cat.limit - cat.spent).toLocaleString()} left</span>
+                            ? <span className="text-xs text-red-400 font-medium">Over by {sym}{(cat.spent - cat.limit).toFixed(2)}</span>
+                            : <span className="text-xs text-gray-400 dark:text-gray-500">{sym}{(cat.limit - cat.spent).toFixed(2)} left</span>
                           }
                         </div>
                       </>

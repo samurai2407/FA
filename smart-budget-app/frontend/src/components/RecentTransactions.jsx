@@ -1,9 +1,13 @@
 // src/components/RecentTransactions.jsx
 import { useState } from 'react';
+import { currencySymbol } from '../utils/currency';
 
-export default function RecentTransactions({ transactions = [], onDelete }) {
+export default function RecentTransactions({ transactions = [], onDelete, currency }) {
+  const sym = currencySymbol(currency);
   const [confirmId, setConfirmId] = useState(null);
-  const recent = transactions.slice(0, 8);
+  const recent = [...transactions]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 8);
 
   function handleDelete(id) {
     onDelete?.(id);
@@ -38,7 +42,7 @@ export default function RecentTransactions({ transactions = [], onDelete }) {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <span className="font-bold text-sm text-gray-800 dark:text-gray-200">
-                -${tx.amount.toFixed(2)}
+                -{sym}{tx.amount.toFixed(2)}
               </span>
               {confirmId === tx.id ? (
                 <div className="flex items-center gap-1">
