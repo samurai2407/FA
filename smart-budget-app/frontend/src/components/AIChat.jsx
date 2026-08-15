@@ -1,5 +1,6 @@
 // src/components/AIChat.jsx
 import { useState, useRef, useEffect } from 'react';
+import { aiAPI } from '../services/api';
 
 const SUGGESTIONS = [
   'Where am I overspending?',
@@ -8,24 +9,11 @@ const SUGGESTIONS = [
   'Am I on track this month?',
 ];
 
-function getBotReply(message) {
-  const msg = message.toLowerCase();
-  if (msg.includes('overspend') || msg.includes('over budget'))
-    return "Based on your data, Entertainment and Shopping are closest to their limits. Consider trimming dining out to stay on track.";
-  if (msg.includes('save') || msg.includes('saving'))
-    return "You have $1,152.50 remaining this month. If you cut discretionary spending by 15%, you could save an extra $425!";
-  if (msg.includes('biggest') || msg.includes('largest'))
-    return "Your biggest expense category this month is Food & Dining at $820, followed by Shopping at $640.";
-  if (msg.includes('track') || msg.includes('budget'))
-    return "You're at 71% of your monthly budget with about 16 days left. Try to keep daily spending under $72.";
-  return "I'm your AI budget assistant! Ask me about your spending, savings tips, or budget health.";
-}
-
 export default function AIChat({ onClose }) {
   const [messages, setMessages] = useState([
     { id: 0, role: 'bot', text: "Hi! I'm your SmartBudget AI assistant. Ask me anything about your spending or finances 💰" },
   ]);
-  const [input, setInput]     = useState('');
+  const [input,   setInput]   = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef             = useRef(null);
 
@@ -33,16 +21,38 @@ export default function AIChat({ onClose }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  function sendMessage(text) {
-    const userText = text || input.trim();
-    if (!userText) return;
+  async function sendMessage(text) {
+    const userText = (text || input).trim();
+    if (!userText || loading) return;
     setInput('');
-    setMessages((prev) => [...prev, { id: Date.now(), role: 'user', text: userText }]);
+
+    const userMsg = { id: Date.now(), role: 'user', text: userText };
+    setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { id: Date.now() + 1, role: 'bot', text: getBotReply(userText) }]);
+
+    try {
+      // Build history from current messages (exclude the initial greeting)
+      const history = messages
+        .slice(1) // skip the greeting
+        .map((m) => ({ role: m.role, text: m.text }));
+
+      const res = await aiAPI.chat(userText, history);
+      setMessages((prev) => [
+        ...prev,
+        { id: Date.now() + 1, role: 'bot', text: res.data.reply },
+      ]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          role: 'bot',
+          text: "Sorry, I couldn't reach the AI right now. Please try again in a moment.",
+        },
+      ]);
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   }
 
   return (
@@ -54,7 +64,7 @@ export default function AIChat({ onClose }) {
           <span className="text-xl">🤖</span>
           <div>
             <p className="font-bold text-sm">AI Assistant</p>
-            <p className="text-xs text-gray-400">Always here to help</p>
+            <p className="text-xs text-green-400">● Powered by Gemini</p>
           </div>
         </div>
         <button onClick={onClose}
@@ -67,7 +77,7 @@ export default function AIChat({ onClose }) {
       <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-white dark:bg-gray-900">
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed
+            <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap
               ${msg.role === 'user'
                 ? 'bg-[#1a202c] dark:bg-[#00d09c] dark:text-gray-900 text-white rounded-br-sm'
                 : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-sm'}`}>
@@ -89,7 +99,7 @@ export default function AIChat({ onClose }) {
         <div ref={bottomRef} />
       </div>
 
-      {/* Suggestions */}
+      {/* Suggestions — show on first open */}
       {messages.length === 1 && (
         <div className="px-4 pb-2 flex flex-wrap gap-2 shrink-0 bg-white dark:bg-gray-900">
           {SUGGESTIONS.map((s) => (

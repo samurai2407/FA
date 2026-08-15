@@ -9,6 +9,7 @@ import transactionRoutes  from './routes/transactions.js';
 import budgetRoutes       from './routes/budget.js';
 import analyticsRoutes    from './routes/analytics.js';
 import profileRoutes      from './routes/profile.js';
+import aiRoutes           from './routes/ai.js';
 import errorHandler       from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -33,6 +34,7 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/budget',       budgetRoutes);
 app.use('/api/analytics',    analyticsRoutes);
 app.use('/api/profile',      profileRoutes);
+app.use('/api/ai',           aiRoutes);
 
 // 404 handler for unknown routes
 app.use((_req, res) => res.status(404).json({ message: 'Route not found' }));

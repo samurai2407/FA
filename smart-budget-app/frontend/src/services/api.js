@@ -43,6 +43,11 @@ export const analyticsAPI = {
   getCategoryBreakdown: () => client.get('/analytics/categories'),
 };
 
+// ─── AI Chat ──────────────────────────────────────────────────────────────────
+export const aiAPI = {
+  chat: (message, history) => client.post('/ai/chat', { message, history }),
+};
+
 // ─── Profile ──────────────────────────────────────────────────────────────────
 export const profileAPI = {
   get:    ()     => client.get('/profile'),
