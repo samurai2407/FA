@@ -58,93 +58,93 @@ export default function AddExpense({ addTransaction, user }) {
     }
   }
 
-  const inputBase = 'w-full p-4 rounded-xl outline-none transition-colors bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500';
+  const inputBase = 'w-full p-4 rounded-2xl outline-none transition-colors bg-[#1C1C1E] text-white placeholder-[#A3A3A3] text-sm font-medium';
   const inputBorder = (err) => err
-    ? 'border border-red-400'
-    : 'border border-gray-100 dark:border-gray-700 focus:border-[#00d09c] dark:focus:border-[#00d09c]';
+    ? 'border border-red-500'
+    : 'border border-white/10 focus:border-[#4B58FF]';
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
+    <div className="p-4 md:p-8 bg-black min-h-screen">
       <div className="max-w-lg mx-auto">
 
         {/* Header */}
-        <div className="flex items-center mb-8 mt-4 md:mt-0">
+        <div className="flex items-center mb-8 mt-2 md:mt-0">
           <Link to="/"
-            className="w-10 h-10 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors shadow-sm shrink-0"
+            className="w-10 h-10 bg-[#151515] border border-white/10 rounded-2xl flex items-center justify-center text-[#A3A3A3] hover:bg-white/10 hover:text-white transition-colors shrink-0"
           >←</Link>
-          <h2 className="text-xl font-bold ml-4 text-gray-900 dark:text-white">Add New Expense</h2>
+          <h2 className="text-xl font-bold ml-4 text-white tracking-tight">Add New Expense</h2>
         </div>
 
         {success && (
-          <div className="mb-6 bg-[#00d09c]/10 border border-[#00d09c]/30 text-[#00874f] dark:text-[#00d09c] rounded-xl px-4 py-3 text-sm font-medium">
+          <div className="mb-6 bg-[#75F97D]/10 border border-[#75F97D]/30 text-[#75F97D] rounded-2xl px-4 py-3 text-sm font-medium">
             ✅ Expense saved! Redirecting…
           </div>
         )}
         {errors.submit && (
-          <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl px-4 py-3 text-sm">
+          <div className="mb-6 bg-red-500/10 border border-red-500/30 text-red-400 rounded-2xl px-4 py-3 text-sm">
             {errors.submit}
           </div>
         )}
 
         <form onSubmit={handleSubmit} noValidate>
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8 space-y-6">
+          <div className="bg-[#151515] rounded-[28px] border border-white/5 p-6 md:p-8 space-y-6">
 
             {/* Amount */}
             <div className="text-center flex flex-col items-center">
-              <label className="text-xs text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mb-3">
+              <label className="text-xs text-[#A3A3A3] font-bold uppercase tracking-widest mb-3">
                 Expense Amount
               </label>
-              <div className={`flex justify-center items-center text-6xl font-bold text-gray-900 dark:text-white border-b-2 pb-1 transition-colors
-                ${errors.amount ? 'border-red-400' : 'border-gray-200 dark:border-gray-700 focus-within:border-[#00d09c]'}`}>
+              <div className={`flex justify-center items-center text-6xl font-bold text-white border-b-2 pb-1 transition-colors
+                ${errors.amount ? 'border-red-500' : 'border-white/10 focus-within:border-[#4B58FF]'}`}>
                 <span>{sym}</span>
                 <input type="number" name="amount" value={form.amount} onChange={handleChange}
                   placeholder="0.00" min="0" step="0.01"
-                  className="w-44 bg-transparent border-none outline-none text-center p-0 text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-600" />
+                  className="w-44 bg-transparent border-none outline-none text-center p-0 text-white placeholder-white/20" />
               </div>
-              {errors.amount && <p className="text-red-500 text-xs mt-2">{errors.amount}</p>}
+              {errors.amount && <p className="text-red-400 text-xs mt-2">{errors.amount}</p>}
             </div>
 
             {/* Category grid */}
             <div>
-              <label className="block text-sm font-bold mb-3 text-gray-900 dark:text-white">Category</label>
+              <label className="block text-sm font-bold mb-3 text-white">Category</label>
               <div className="grid grid-cols-3 gap-2">
                 {CATEGORIES.map(({ label, icon }) => (
                   <button type="button" key={label}
                     onClick={() => { setForm((p) => ({ ...p, category: label })); setErrors((p) => ({ ...p, category: '' })); }}
-                    className={`flex flex-col items-center gap-1 p-3 rounded-xl border text-xs font-medium transition-all
+                    className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border text-xs font-medium transition-all
                       ${form.category === label
-                        ? 'border-[#00d09c] bg-[#00d09c]/10 text-[#00874f] dark:text-[#00d09c]'
-                        : 'border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600'}`}
+                        ? 'border-[#4B58FF] bg-[#4B58FF]/20 text-[#4B58FF]'
+                        : 'border-white/10 bg-[#1C1C1E] text-[#A3A3A3] hover:border-white/20 hover:text-white'}`}
                   >
                     <span className="text-xl">{icon}</span>
                     <span className="leading-tight text-center">{label}</span>
                   </button>
                 ))}
               </div>
-              {errors.category && <p className="text-red-500 text-xs mt-2">{errors.category}</p>}
+              {errors.category && <p className="text-red-400 text-xs mt-2">{errors.category}</p>}
             </div>
 
             {/* Title */}
             <div>
-              <label className="block text-sm font-bold mb-2 text-gray-900 dark:text-white">Title</label>
+              <label className="block text-sm font-bold mb-2 text-white">Title</label>
               <input type="text" name="title" value={form.title} onChange={handleChange}
                 placeholder="e.g., Lunch at cafe"
                 className={`${inputBase} ${inputBorder(errors.title)}`} />
-              {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
+              {errors.title && <p className="text-red-400 text-xs mt-1">{errors.title}</p>}
             </div>
 
             {/* Date */}
             <div>
-              <label className="block text-sm font-bold mb-2 text-gray-900 dark:text-white">Date</label>
+              <label className="block text-sm font-bold mb-2 text-white">Date</label>
               <input type="date" name="date" value={form.date} onChange={handleChange}
                 className={`${inputBase} ${inputBorder(errors.date)}`} />
-              {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
+              {errors.date && <p className="text-red-400 text-xs mt-1">{errors.date}</p>}
             </div>
 
             {/* Note */}
             <div>
-              <label className="block text-sm font-bold mb-2 text-gray-900 dark:text-white">
-                Note <span className="font-normal text-gray-400 dark:text-gray-500">(optional)</span>
+              <label className="block text-sm font-bold mb-2 text-white">
+                Note <span className="font-normal text-[#A3A3A3]">(optional)</span>
               </label>
               <textarea name="note" value={form.note} onChange={handleChange}
                 placeholder="Any additional details..."
@@ -152,7 +152,7 @@ export default function AddExpense({ addTransaction, user }) {
             </div>
 
             <button type="submit" disabled={success}
-              className="w-full bg-[#1a202c] dark:bg-[#00d09c] hover:bg-[#2d3748] dark:hover:bg-[#00b386] disabled:opacity-60 text-white py-4 rounded-xl font-bold shadow-md transition-colors">
+              className="w-full bg-[#4B58FF] hover:bg-[#3a46e0] disabled:opacity-50 text-white py-4 rounded-2xl font-bold shadow-lg shadow-[#4B58FF]/20 transition-colors">
               Save Expense
             </button>
           </div>

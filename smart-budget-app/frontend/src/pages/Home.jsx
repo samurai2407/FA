@@ -14,18 +14,18 @@ export default function Home({ user, totalSpent, categories, transactions, delet
   const userId = authUser?._id || authUser?.id;
 
   return (
-    <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
+    <div className="p-4 md:p-8 bg-black min-h-screen">
 
       {/* Header */}
-      <div className="mb-6 md:mb-8 mt-4 md:mt-0">
-        <p className="text-gray-500 dark:text-gray-400 text-sm">Welcome back</p>
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+      <div className="mb-6 md:mb-8 mt-2 md:mt-0">
+        <p className="text-[#A3A3A3] text-sm">Welcome back</p>
+        <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
           Good morning, {user?.name?.split(' ')[0]} 👋
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 flex flex-col gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="lg:col-span-2 flex flex-col gap-5">
           <BudgetSummary totalSpent={totalSpent} monthlyBudget={user?.monthlyBudget} currency={currency} />
           <CategorySpending categories={categories} currency={currency} />
         </div>

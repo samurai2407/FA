@@ -92,15 +92,15 @@ export default function AIChat({ onClose, userId }) {
   }
 
   return (
-    <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 w-[calc(100vw-2rem)] max-w-sm h-[460px] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50 flex flex-col overflow-hidden">
+    <div className="fixed bottom-24 right-4 md:bottom-8 md:right-8 w-[calc(100vw-2rem)] max-w-sm h-[460px] bg-[#111111] rounded-[28px] shadow-2xl shadow-black/60 border border-white/10 z-50 flex flex-col overflow-hidden">
 
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-[#1a202c] dark:bg-gray-800 text-white rounded-t-2xl shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 bg-[#151515] border-b border-white/5 rounded-t-[28px] shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-xl">🤖</span>
+          <div className="w-8 h-8 bg-[#4B58FF] rounded-xl flex items-center justify-center text-base">🤖</div>
           <div>
-            <p className="font-bold text-sm">AI Assistant</p>
-            <p className="text-xs text-green-400">● Powered by Gemini</p>
+            <p className="font-bold text-sm text-white">AI Assistant</p>
+            <p className="text-xs text-[#75F97D]">● Powered by Gemini</p>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -112,20 +112,20 @@ export default function AIChat({ onClose, userId }) {
             </button>
           )}
           <button onClick={onClose}
-            className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors text-sm">
+            className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors text-sm text-[#A3A3A3] hover:text-white">
             ✕
           </button>
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-white dark:bg-gray-900">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#111111]">
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed
+            <div className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed
               ${msg.role === 'user'
-                ? 'bg-[#1a202c] dark:bg-[#00d09c] dark:text-gray-900 text-white rounded-br-sm'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-sm'}`}>
+                ? 'bg-[#4B58FF] text-white rounded-br-sm'
+                : 'bg-[#1C1C1E] text-white/80 rounded-bl-sm border border-white/5'}`}>
               {msg.role === 'user' ? msg.text : (
                 <ReactMarkdown
                   components={{
@@ -133,11 +133,11 @@ export default function AIChat({ onClose, userId }) {
                     ul:     ({ children }) => <ul className="list-disc pl-4 mb-1 space-y-0.5">{children}</ul>,
                     ol:     ({ children }) => <ol className="list-decimal pl-4 mb-1 space-y-0.5">{children}</ol>,
                     li:     ({ children }) => <li>{children}</li>,
-                    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
-                    h1:     ({ children }) => <p className="font-bold mb-1">{children}</p>,
-                    h2:     ({ children }) => <p className="font-bold mb-1">{children}</p>,
-                    h3:     ({ children }) => <p className="font-semibold mb-0.5">{children}</p>,
-                    hr:     () => <hr className="my-1 border-gray-300 dark:border-gray-600" />,
+                    strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+                    h1:     ({ children }) => <p className="font-bold mb-1 text-white">{children}</p>,
+                    h2:     ({ children }) => <p className="font-bold mb-1 text-white">{children}</p>,
+                    h3:     ({ children }) => <p className="font-semibold mb-0.5 text-white">{children}</p>,
+                    hr:     () => <hr className="my-1 border-white/10" />,
                   }}
                 >
                   {msg.text}
@@ -148,11 +148,11 @@ export default function AIChat({ onClose, userId }) {
         ))}
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-2xl rounded-bl-sm">
+            <div className="bg-[#1C1C1E] border border-white/5 px-3.5 py-2.5 rounded-2xl rounded-bl-sm">
               <div className="flex gap-1 items-center h-4">
-                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <span className="w-1.5 h-1.5 bg-[#A3A3A3] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 bg-[#A3A3A3] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 bg-[#A3A3A3] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </div>
           </div>
@@ -162,10 +162,10 @@ export default function AIChat({ onClose, userId }) {
 
       {/* Suggestions — only on fresh chat */}
       {messages.length === 1 && (
-        <div className="px-4 pb-2 flex flex-wrap gap-2 shrink-0 bg-white dark:bg-gray-900">
+        <div className="px-4 pb-2 flex flex-wrap gap-2 shrink-0 bg-[#111111]">
           {SUGGESTIONS.map((s) => (
             <button key={s} onClick={() => sendMessage(s)}
-              className="text-xs bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 px-3 py-1.5 rounded-full transition-colors">
+              className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 text-[#A3A3A3] hover:text-white px-3 py-1.5 rounded-full transition-colors">
               {s}
             </button>
           ))}
@@ -173,17 +173,17 @@ export default function AIChat({ onClose, userId }) {
       )}
 
       {/* Input */}
-      <div className="px-3 pb-3 shrink-0 bg-white dark:bg-gray-900">
-        <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden focus-within:border-[#00d09c] transition-colors">
+      <div className="px-3 pb-3 shrink-0 bg-[#111111]">
+        <div className="flex items-center gap-2 bg-[#1C1C1E] border border-white/10 rounded-2xl overflow-hidden focus-within:border-[#4B58FF] transition-colors">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="Ask about your budget..."
-            className="flex-1 bg-transparent px-3 py-3 text-sm outline-none text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+            className="flex-1 bg-transparent px-3 py-3 text-sm outline-none text-white placeholder-[#A3A3A3]"
           />
           <button onClick={() => sendMessage()} disabled={!input.trim() || loading}
-            className="mr-2 w-8 h-8 bg-[#00d09c] hover:bg-[#00b386] disabled:opacity-40 text-white rounded-lg flex items-center justify-center transition-colors shrink-0">
+            className="mr-2 w-8 h-8 bg-[#4B58FF] hover:bg-[#3a46e0] disabled:opacity-40 text-white rounded-xl flex items-center justify-center transition-colors shrink-0">
             ↑
           </button>
         </div>
