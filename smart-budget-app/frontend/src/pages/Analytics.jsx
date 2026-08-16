@@ -2,7 +2,7 @@
 import { formatAmount, currencySymbol } from '../utils/currency';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
+  PieChart, Pie, Cell,
 } from 'recharts';
 
 const RADIAN = Math.PI / 180;
@@ -87,22 +87,28 @@ export default function Analytics({ totalSpent, categories, monthlyTrend, user }
         {/* Pie chart */}
         <div className="bg-[#151515] rounded-[24px] p-6 border border-white/5">
           <h3 className="font-bold text-base text-white mb-1 tracking-tight">Spending by Category</h3>
-          <p className="text-xs text-[#A3A3A3] mb-5">This month</p>
-          <ResponsiveContainer width="100%" height={220}>
+          <p className="text-xs text-[#A3A3A3] mb-4">This month</p>
+          <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie data={categories} dataKey="spent" nameKey="name"
-                cx="50%" cy="50%" outerRadius={90} labelLine={false} label={CustomPieLabel}>
+                cx="50%" cy="50%" outerRadius={85} labelLine={false} label={CustomPieLabel}>
                 {categories?.map((cat) => <Cell key={cat.name} fill={cat.color} />)}
               </Pie>
               <Tooltip
                 formatter={(v, name) => [`${sym}${v.toLocaleString()}`, name]}
                 contentStyle={{ borderRadius: '14px', border: `1px solid ${tooltipBorder}`, fontSize: 13, background: tooltipBg, color: '#fff' }}
               />
-              <Legend iconType="circle" iconSize={8}
-                formatter={(value) => <span style={{ fontSize: 12, color: tickColor }}>{value}</span>}
-              />
             </PieChart>
           </ResponsiveContainer>
+          {/* Custom legend — even grid, never wraps awkwardly */}
+          <div className="grid grid-cols-3 gap-x-3 gap-y-2 mt-4">
+            {categories?.map((cat) => (
+              <div key={cat.name} className="flex items-center gap-1.5 min-w-0">
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ background: cat.color }} />
+                <span className="text-xs text-[#A3A3A3] truncate">{cat.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Breakdown table */}

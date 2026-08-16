@@ -1,6 +1,5 @@
 // src/pages/Profile.jsx
 import { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
 import { useAuth }  from '../context/AuthContext';
 import { currencySymbol } from '../utils/currency';
 
@@ -35,7 +34,6 @@ function Row({ icon, label, value, onClick, destructive }) {
 }
 
 export default function Profile({ user, categories = [], updateUser, updateCategoryLimits }) {
-  const { dark, toggle } = useTheme();
   const { logout, updateStoredUser } = useAuth();
   const sym = currencySymbol(user?.currency);
 
@@ -247,19 +245,6 @@ export default function Profile({ user, categories = [], updateUser, updateCateg
         <Section title="Account">
           <Row icon="🔔" label="Notifications" value="On" onClick={() => {}} />
           <Row icon="🔒" label="Change Password"           onClick={() => {}} />
-        </Section>
-
-        <Section title="Appearance">
-          <button type="button" onClick={toggle}
-            className="w-full flex items-center justify-between px-6 py-4 hover:bg-white/5 transition-colors text-left text-white">
-            <div className="flex items-center gap-3">
-              <span className="text-lg">{dark ? '☀️' : '🌙'}</span>
-              <span className="text-sm font-medium">{dark ? 'Light Mode' : 'Dark Mode'}</span>
-            </div>
-            <div className={`w-10 h-6 rounded-full transition-colors relative ${dark ? 'bg-[#75F97D]' : 'bg-white/20'}`}>
-              <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${dark ? 'left-5' : 'left-1'}`} />
-            </div>
-          </button>
         </Section>
 
         <Section title="Budget Settings">
