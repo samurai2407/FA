@@ -62,13 +62,36 @@ Guidelines:
 - Be concise, warm, and practical. Use bullet points when listing things.
 - Reference the user's actual numbers above when answering — don't make up values.
 - Give actionable advice, not just observations.
-- Keep replies under 120 words unless the user asks for detail.`;
+- Keep replies under 120 words unless the user asks for detail.
+- Do not use headers (###). Use short paragraphs and bullet points only.`;
 
     // ── Build Gemini conversation history ────────────────────────────────
-    const geminiHistory = history.map((msg) => ({
-      role:  msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }],
-    }));
+    // Frontend uses role 'bot'; Gemini requires 'model'.
+    // Gemini also requires history to strictly alternate user → model.
+    // We rebuild a clean alternating sequence to avoid 400s.
+    const rawHistory = history
+      .filter((msg) => msg.text?.trim())
+      .map((msg) => ({
+        role:  msg.role === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }],
+      }));
+
+    // Drop leading model turns (history must start with user)
+    while (rawHistory.length && rawHistory[0].role !== 'user') rawHistory.shift();
+
+    // Ensure strict alternation — keep only valid pairs
+    const geminiHistory = [];
+    let expectRole = 'user';
+    for (const turn of rawHistory) {
+      if (turn.role === expectRole) {
+        geminiHistory.push(turn);
+        expectRole = expectRole === 'user' ? 'model' : 'user';
+      }
+    }
+    // History must end on a model turn (last user turn becomes the new message)
+    if (geminiHistory.length && geminiHistory[geminiHistory.length - 1].role === 'user') {
+      geminiHistory.pop();
+    }
 
     const model = genAI.getGenerativeModel({
       model: 'gemini-flash-latest',
@@ -81,6 +104,7 @@ Guidelines:
 
     res.json({ reply });
   } catch (err) {
+    console.error('[AI route error]', err.message);
     next(err);
   }
 });

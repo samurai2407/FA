@@ -18,8 +18,11 @@ function handleValidationError(err) {
 }
 
 export default function errorHandler(err, req, res, _next) {
-  let status  = err.statusCode || err.status || 500;
+  let status  = err.statusCode || 500;
   let message = err.message || 'Internal server error';
+
+  // Only use err.status for known Express/HTTP errors (4xx we set ourselves)
+  if (err.status && err.status < 500 && err.statusCode) status = err.statusCode;
 
   if (err.name === 'CastError')          ({ status, message } = handleCastError(err));
   if (err.code === 11000)                ({ status, message } = handleDuplicateKey(err));

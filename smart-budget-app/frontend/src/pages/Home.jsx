@@ -5,10 +5,13 @@ import CategorySpending   from '../components/CategorySpending';
 import RecentTransactions from '../components/RecentTransactions';
 import AIChatButton       from '../components/AIChatButton';
 import AIChat             from '../components/AIChat';
+import { useAuth }        from '../context/AuthContext';
 
 export default function Home({ user, totalSpent, categories, transactions, deleteTransaction }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const { user: authUser } = useAuth();
   const currency = user?.currency || 'USD';
+  const userId = authUser?._id || authUser?.id;
 
   return (
     <div className="p-4 md:p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
@@ -32,7 +35,7 @@ export default function Home({ user, totalSpent, categories, transactions, delet
       </div>
 
       <AIChatButton onClick={() => setIsChatOpen(true)} />
-      {isChatOpen && <AIChat onClose={() => setIsChatOpen(false)} />}
+      {isChatOpen && <AIChat onClose={() => setIsChatOpen(false)} userId={userId} />}
     </div>
   );
 }
