@@ -81,10 +81,10 @@ export default function AIChat({ onClose, userId }) {
         ...prev,
         { id: Date.now() + 1, role: 'bot', text: res.data.reply },
       ]);
-    } catch {
+    } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { id: Date.now() + 1, role: 'bot', text: "Sorry, I couldn't reach the AI right now. Please try again in a moment." },
+        { id: Date.now() + 1, role: 'bot', text: `Sorry, something went wrong: ${err.message || 'please try again in a moment.'}` },
       ]);
     } finally {
       setLoading(false);

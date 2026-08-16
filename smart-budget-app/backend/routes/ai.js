@@ -9,7 +9,11 @@ import User        from '../models/User.js';
 const router = Router();
 router.use(protect);
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+if (!process.env.GEMINI_API_KEY) {
+  console.error('❌ GEMINI_API_KEY is not set — AI routes will not work');
+}
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 // POST /api/ai/chat
 // Body: { message: string, history: [{ role, text }] }
@@ -94,7 +98,7 @@ Guidelines:
     }
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-flash-latest',
+      model: 'gemini-1.5-flash',
       systemInstruction: { parts: [{ text: systemPrompt }] },
     });
     const chat = model.startChat({ history: geminiHistory });

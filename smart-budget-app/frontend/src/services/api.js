@@ -5,6 +5,17 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 const client = axios.create({ baseURL: BASE_URL });
 
+// Request interceptor — always attach the latest token from localStorage
+// This ensures the header is set even on mobile page-reload / re-hydration
+// before AuthContext has had a chance to run its restore logic.
+client.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Response interceptor — surface error messages cleanly
 client.interceptors.response.use(
   (res) => res,
