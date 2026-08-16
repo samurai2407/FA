@@ -22,19 +22,21 @@ export default function CategorySpending({ categories = [], currency }) {
           const overBudget = cat.limit && cat.spent > cat.limit;
           return (
             <div key={cat.name}>
-              <div className="flex justify-between text-sm mb-2">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 mb-2">
+                {/* Left: dot + name */}
+                <div className="flex items-center gap-2 flex-1 min-w-0">
                   <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: cat.color }} />
-                  <span className="font-medium text-white/80">{cat.name}</span>
+                  <span className="text-sm font-medium text-white/80 truncate">{cat.name}</span>
                 </div>
-                <span>
-                  <strong className={overBudget ? 'text-red-400' : 'text-white'}>
+                {/* Right: spent / limit — fixed width, right-aligned */}
+                <div className="shrink-0 text-right text-sm tabular-nums">
+                  <span className={`font-semibold ${overBudget ? 'text-red-400' : 'text-white'}`}>
                     {sym}{cat.spent.toFixed(2)}
-                  </strong>
-                  {cat.limit && (
+                  </span>
+                  {cat.limit ? (
                     <span className="text-[#A3A3A3]"> / {sym}{cat.limit.toFixed(2)}</span>
-                  )}
-                </span>
+                  ) : null}
+                </div>
               </div>
               {pct !== null && (
                 <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
