@@ -37,8 +37,8 @@ export function AuthProvider({ children }) {
     return res.data;
   }, []);
 
-  const register = useCallback(async (name, email, password, monthlyBudget = 4000) => {
-    const res = await authAPI.register({ name, email, password, monthlyBudget });
+  const register = useCallback(async (name, email, password, monthlyBudget = 4000, currency = 'USD') => {
+    const res = await authAPI.register({ name, email, password, monthlyBudget, currency });
     persist(res.data.token, res.data.user);
     return res.data;
   }, []);

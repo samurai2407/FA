@@ -2,10 +2,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { currencySymbol, CURRENCIES } from '../utils/currency';
 
 export default function Register() {
   const { register } = useAuth();
-  const [form,    setForm]    = useState({ name: '', email: '', password: '', confirm: '', monthlyBudget: '4000' });
+  const [form,    setForm]    = useState({
+    name: '', email: '', password: '', confirm: '',
+    monthlyBudget: '4000', currency: 'USD',
+  });
   const [error,   setError]   = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,7 +25,7 @@ export default function Register() {
     if (form.password !== form.confirm) { setError('Passwords do not match'); return; }
     setLoading(true);
     try {
-      await register(form.name, form.email, form.password, parseFloat(form.monthlyBudget) || 4000);
+      await register(form.name, form.email, form.password, parseFloat(form.monthlyBudget) || 4000, form.currency);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -30,6 +34,7 @@ export default function Register() {
   }
 
   const inputCls = 'w-full p-4 bg-[#1C1C1E] border border-white/10 rounded-2xl outline-none focus:border-[#4B58FF] text-white placeholder-[#A3A3A3] transition-colors text-sm font-medium';
+  const sym = currencySymbol(form.currency);
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
@@ -74,15 +79,27 @@ export default function Register() {
                 placeholder="Repeat password" autoComplete="new-password" className={inputCls} />
             </div>
 
-            <div>
-              <label className="block text-sm font-bold mb-2 text-white">
-                Monthly Budget <span className="font-normal text-[#A3A3A3]">(optional)</span>
-              </label>
-              <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A3A3A3] font-bold text-sm">$</span>
-                <input type="number" name="monthlyBudget" value={form.monthlyBudget} onChange={handleChange}
-                  min="0" placeholder="4000"
-                  className={`${inputCls} pl-8`} />
+            {/* Currency + Monthly Budget side by side */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-bold mb-2 text-white">Currency</label>
+                <select name="currency" value={form.currency} onChange={handleChange} className={inputCls}>
+                  {CURRENCIES.map(({ code, label }) => (
+                    <option key={code} value={code}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold mb-2 text-white">
+                  Budget <span className="font-normal text-[#A3A3A3]">(optional)</span>
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A3A3A3] font-bold text-sm">{sym}</span>
+                  <input type="number" name="monthlyBudget" value={form.monthlyBudget} onChange={handleChange}
+                    min="0" placeholder="4000"
+                    className={`${inputCls} pl-8`} />
+                </div>
               </div>
             </div>
 

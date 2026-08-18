@@ -1,7 +1,7 @@
 // src/pages/Profile.jsx
 import { useState, useEffect } from 'react';
 import { useAuth }  from '../context/AuthContext';
-import { currencySymbol } from '../utils/currency';
+import { currencySymbol, CURRENCIES } from '../utils/currency';
 
 function Section({ title, children }) {
   return (
@@ -188,12 +188,9 @@ export default function Profile({ user, categories = [], updateUser, updateCateg
                     <div>
                       <label className="block text-sm font-semibold mb-1 text-white">Currency</label>
                       <select name="currency" value={form.currency} onChange={handleChange} className={inputCls}>
-                        <option value="USD">USD ($)</option>
-                        <option value="EUR">EUR (€)</option>
-                        <option value="GBP">GBP (£)</option>
-                        <option value="CAD">CAD (CA$)</option>
-                        <option value="AUD">AUD (A$)</option>
-                        <option value="INR">INR (₹)</option>
+                        {CURRENCIES.map(({ code, label }) => (
+                          <option key={code} value={code}>{label}</option>
+                        ))}
                       </select>
                     </div>
                   </div>
