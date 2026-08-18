@@ -119,7 +119,7 @@ export default function AIChat({ onClose, userId }) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#111111]">
+      <div className="chat-scroll flex-1 overflow-y-auto p-4 space-y-3 bg-[#111111]">
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[82%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed
